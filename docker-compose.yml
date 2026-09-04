@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: collaboard-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: collaboard
+      POSTGRES_PASSWORD: collaboard_password
+      POSTGRES_DB: collaboard
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
