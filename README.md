@@ -2,6 +2,8 @@
 
 A real-time collaborative Kanban board backend. Boards contain ordered columns, columns contain ordered tasks, and every mutation (create/update/delete/move) is broadcast live to everyone viewing the same board over Socket.IO.
 
+A React client lives in [`frontend/`](frontend/README.md) — see that README for setup.
+
 ## Tech Stack
 
 - **Runtime**: Node.js + TypeScript

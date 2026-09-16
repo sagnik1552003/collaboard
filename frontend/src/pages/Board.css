@@ -1,0 +1,129 @@
+.board-page {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.board-status {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  color: var(--slate);
+}
+
+.board-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--panel-line);
+  background: var(--ink-raised);
+}
+
+.board-back {
+  background: transparent;
+  border: 1px solid var(--panel-line);
+  color: var(--paper);
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.board-back:hover {
+  border-color: var(--brass);
+  color: var(--brass-strong);
+}
+
+.board-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.board-heading h1 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.board-id {
+  background: transparent;
+  border: none;
+  color: var(--slate);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  padding: 0;
+  text-align: left;
+  width: fit-content;
+}
+
+.board-id:hover {
+  color: var(--brass-strong);
+}
+
+.board-status-chip {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--slate);
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--slate-dim);
+}
+
+.status-online {
+  background: var(--brass);
+  box-shadow: 0 0 0 3px rgba(217, 162, 75, 0.25);
+}
+
+.status-offline {
+  background: var(--rust);
+}
+
+.board-notice {
+  margin: var(--sp-3) var(--sp-5) 0;
+  align-self: flex-start;
+  background: var(--panel);
+  border: 1px solid var(--panel-line);
+  border-left: 3px solid var(--brass);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2) var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--paper);
+}
+
+.board-lanes {
+  flex: 1;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(280px, 1fr);
+  align-items: start;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  overflow-x: auto;
+}
+
+@media (max-width: 900px) {
+  .board-lanes {
+    grid-auto-flow: row;
+    grid-auto-columns: unset;
+  }
+
+  .board-status-chip {
+    font-size: var(--fs-xs);
+  }
+}

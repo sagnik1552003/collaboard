@@ -1,0 +1,143 @@
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/600.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "./tokens.css";
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea,
+button {
+  font-size: var(--fs-base);
+}
+
+textarea {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* --- shared primitives --- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: var(--sp-3) var(--sp-4);
+  font-weight: 600;
+  font-family: var(--font-display);
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn-primary {
+  background: var(--brass);
+  color: #201505;
+}
+
+.btn-primary:hover {
+  background: var(--brass-strong);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--panel-line);
+  color: var(--paper);
+}
+
+.btn-ghost:hover {
+  border-color: var(--brass);
+  color: var(--brass-strong);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.field label {
+  font-size: var(--fs-sm);
+  color: var(--slate);
+}
+
+.field input,
+.field textarea {
+  background: var(--ink-raised);
+  border: 1px solid var(--panel-line);
+  border-radius: var(--radius-sm);
+  color: var(--paper);
+  padding: var(--sp-3);
+  font-family: var(--font-body);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--slate-dim);
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--brass);
+}
