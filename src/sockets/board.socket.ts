@@ -3,7 +3,8 @@ import prisma from "../lib/prisma.js";
 import {
   createTask,
   updateTask,
-  deleteTask
+  deleteTask,
+  moveTask
 } from "../modules/tasks/task.service.js";
 
 interface JoinBoardPayload {
@@ -21,6 +22,12 @@ interface UpdateTaskPayload {
   taskId: string;
   title?: string;
   description?: string;
+}
+
+interface MoveTaskPayload {
+  taskId: string;
+  targetColumnId: string;
+  targetPosition: number;
 }
 
 export function registerBoardSocket(io: Server) {
@@ -264,6 +271,108 @@ socket.on(
 
       socket.emit("error", {
         message: "Failed to delete task",
+      });
+    }
+  }
+);
+
+socket.on(
+  "task:move",
+  async ({
+    taskId,
+    targetColumnId,
+    targetPosition,
+  }: MoveTaskPayload) => {
+    try {
+      const boardId = socket.data.boardId;
+
+      if (!boardId) {
+        socket.emit("error", {
+          message: "You must join a board first",
+        });
+
+        return;
+      }
+
+      if (!Number.isInteger(targetPosition) || targetPosition < 0) {
+        socket.emit("error", {
+          message: "Invalid target position",
+        });
+
+        return;
+      }
+
+      const task = await prisma.task.findUnique({
+        where: {
+          id: taskId,
+        },
+        include: {
+          column: {
+            select: {
+              boardId: true,
+            },
+          },
+        },
+      });
+
+      if (!task) {
+        socket.emit("error", {
+          message: "Task not found",
+        });
+
+        return;
+      }
+
+      if (task.column.boardId !== boardId) {
+        socket.emit("error", {
+          message: "Task does not belong to this board",
+        });
+
+        return;
+      }
+
+      const targetColumn = await prisma.column.findUnique({
+        where: {
+          id: targetColumnId,
+        },
+        select: {
+          boardId: true,
+        },
+      });
+
+      if (!targetColumn) {
+        socket.emit("error", {
+          message: "Target column not found",
+        });
+
+        return;
+      }
+
+      if (targetColumn.boardId !== boardId) {
+        socket.emit("error", {
+          message: "Target column does not belong to this board",
+        });
+
+        return;
+      }
+
+      const movedTask = await moveTask(
+        taskId,
+        targetColumnId,
+        targetPosition
+      );
+
+      io.to(`board:${boardId}`).emit(
+        "task:moved",
+        {
+          task: movedTask,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+
+      socket.emit("error", {
+        message: "Failed to move task",
       });
     }
   }

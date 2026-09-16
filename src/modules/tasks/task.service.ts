@@ -50,3 +50,121 @@ export async function deleteTask(taskId: string) {
     },
   });
 }
+
+export async function moveTask(
+  taskId: string,
+  targetColumnId: string,
+  targetPosition: number
+) {
+  return prisma.$transaction(async (tx) => {
+    const task = await tx.task.findUnique({
+      where: {
+        id: taskId,
+      },
+    });
+
+    if (!task) {
+      throw new Error("Task not found");
+    }
+
+    const targetColumn = await tx.column.findUnique({
+      where: {
+        id: targetColumnId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!targetColumn) {
+      throw new Error("Target column not found");
+    }
+
+    const oldColumnId = task.columnId;
+
+    // Moving within the same column
+    if (oldColumnId === targetColumnId) {
+      if (targetPosition > task.position) {
+        await tx.task.updateMany({
+          where: {
+            columnId: oldColumnId,
+            position: {
+              gt: task.position,
+              lte: targetPosition,
+            },
+          },
+          data: {
+            position: {
+              decrement: 1,
+            },
+          },
+        });
+      } else if (targetPosition < task.position) {
+        await tx.task.updateMany({
+          where: {
+            columnId: oldColumnId,
+            position: {
+              gte: targetPosition,
+              lt: task.position,
+            },
+          },
+          data: {
+            position: {
+              increment: 1,
+            },
+          },
+        });
+      }
+
+      return tx.task.update({
+        where: {
+          id: taskId,
+        },
+        data: {
+          position: targetPosition,
+        },
+      });
+    }
+
+    // Remove task from old column
+    await tx.task.updateMany({
+      where: {
+        columnId: oldColumnId,
+        position: {
+          gt: task.position,
+        },
+      },
+      data: {
+        position: {
+          decrement: 1,
+        },
+      },
+    });
+
+    // Make room in target column
+    await tx.task.updateMany({
+      where: {
+        columnId: targetColumnId,
+        position: {
+          gte: targetPosition,
+        },
+      },
+      data: {
+        position: {
+          increment: 1,
+        },
+      },
+    });
+
+    // Move task
+    return tx.task.update({
+      where: {
+        id: taskId,
+      },
+      data: {
+        columnId: targetColumnId,
+        position: targetPosition,
+      },
+    });
+  });
+}

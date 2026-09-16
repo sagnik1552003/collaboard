@@ -14,19 +14,15 @@ socket.on("connect", () => {
 socket.on("board-joined", (data) => {
   console.log("Joined board:", data);
 
-  socket.emit("task:update", {
-    taskId: "some-task-id",
-    title: "My first real-time task",
-    description: "Created through Socket.IO",
+  socket.emit("task:move", {
+    taskId: "470550e1-e5ff-47b7-ba5b-e7844feb7661",
+    targetColumnId: "c8e3f340-e479-4eb9-8fd5-763361cbb591",
+    targetPosition: 0,
   });
 });
 
-socket.on("task:created", (data) => {
-  console.log("Task created:", data);
-});
-
-socket.on("user-joined", (data) => {
-  console.log("Someone joined:", data);
+socket.on("task:moved", (data) => {
+  console.log("TASK MOVED:", data);
 });
 
 socket.on("error", (data) => {
